@@ -43,6 +43,41 @@
     revealEls.forEach(function (el) { el.classList.add("visible"); });
   }
 
+  /* Hero banner carousel */
+  var carousel = document.querySelector(".hero-carousel");
+  if (carousel) {
+    var slides = carousel.querySelector(".slides");
+    var count = slides.children.length;
+    var dotsWrap = carousel.querySelector(".dots");
+    var current = 0;
+    var timer = null;
+
+    var goTo = function (i) {
+      current = (i + count) % count;
+      slides.style.transform = "translateX(-" + current * 100 + "%)";
+      dotsWrap.querySelectorAll(".dot").forEach(function (d, j) {
+        d.classList.toggle("active", j === current);
+      });
+    };
+    var restart = function () {
+      if (timer) clearInterval(timer);
+      timer = setInterval(function () { goTo(current + 1); }, 4500);
+    };
+
+    for (var i = 0; i < count; i++) {
+      var dot = document.createElement("button");
+      dot.className = "dot" + (i === 0 ? " active" : "");
+      dot.setAttribute("aria-label", "Go to slide " + (i + 1));
+      dot.addEventListener("click", (function (idx) {
+        return function () { goTo(idx); restart(); };
+      })(i));
+      dotsWrap.appendChild(dot);
+    }
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      restart();
+    }
+  }
+
   /* Contact form → opens the visitor's email client with a prefilled enquiry */
   var form = document.getElementById("enquiry-form");
   if (form) {
