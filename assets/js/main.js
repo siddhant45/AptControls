@@ -78,29 +78,42 @@
     }
   }
 
-  /* Contact form → opens the visitor's email client with a prefilled enquiry */
+  /* Contact form — posts to FormSubmit (email) or opens WhatsApp with the enquiry prefilled */
   var form = document.getElementById("enquiry-form");
   if (form) {
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var get = function (id) {
-        var el = document.getElementById(id);
-        return el ? el.value.trim() : "";
-      };
-      var subject = "Enquiry from " + (get("f-name") || "Website") +
-        (get("f-company") ? " (" + get("f-company") + ")" : "");
-      var body =
-        "Name: " + get("f-name") + "\n" +
-        "Company: " + get("f-company") + "\n" +
-        "Phone: " + get("f-phone") + "\n" +
-        "Email: " + get("f-email") + "\n" +
-        "Interested in: " + get("f-topic") + "\n\n" +
-        get("f-message");
-      location.href =
-        "mailto:enquiry@aptcontrols.net" +
-        "?subject=" + encodeURIComponent(subject) +
-        "&body=" + encodeURIComponent(body);
-    });
+    // Point the post-submit redirect at this site's own thank-you page,
+    // so it works on any host (production domain, GitHub Pages, local preview).
+    var nextField = document.getElementById("f-next");
+    if (nextField && location.protocol.indexOf("http") === 0) {
+      nextField.value =
+        location.origin + location.pathname.replace(/[^/]*$/, "") + "thank-you.html";
+    }
+
+    var getField = function (id) {
+      var el = document.getElementById(id);
+      return el ? el.value.trim() : "";
+    };
+
+    var waButton = document.getElementById("whatsapp-send");
+    if (waButton) {
+      waButton.addEventListener("click", function () {
+        if (!form.reportValidity()) return;
+        var message =
+          "New enquiry via aptcontrols.net\n" +
+          "-----------------------------\n" +
+          "Name: " + getField("f-name") + "\n" +
+          "Company: " + (getField("f-company") || "-") + "\n" +
+          "Phone: " + getField("f-phone") + "\n" +
+          "Email: " + getField("f-email") + "\n" +
+          "Interested in: " + getField("f-topic") + "\n\n" +
+          "Requirement:\n" + getField("f-message");
+        window.open(
+          "https://wa.me/918878114492?text=" + encodeURIComponent(message),
+          "_blank",
+          "noopener"
+        );
+      });
+    }
   }
 
   /* Footer year */

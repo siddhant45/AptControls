@@ -669,6 +669,10 @@ p { margin: 0 0 1em; }
 }
 .field textarea { resize: vertical; min-height: 130px; }
 .form-note { font-size: 0.83rem; color: var(--ink-faint); margin-top: 12px; }
+.form-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-wa { background: #1da851; color: var(--white); }
+.btn-wa:hover { background: #128c42; color: var(--white); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.info-card .icon-wa { background: #e7f7ee; color: #128c42; }
 
 .map-frame {
   border: 1px solid var(--line);
