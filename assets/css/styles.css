@@ -738,6 +738,144 @@ p { margin: 0 0 1em; }
 }
 
 /* --------------------------------------------------------------------------
+   Floating WhatsApp button
+   -------------------------------------------------------------------------- */
+.wa-float {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: #1da851;
+  color: var(--white);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 13px 20px;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(18, 140, 66, 0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.wa-float:hover { background: #128c42; color: var(--white); transform: translateY(-2px); }
+.wa-float svg { width: 21px; height: 21px; }
+@media (max-width: 720px) {
+  .wa-float span { display: none; }
+  .wa-float { padding: 14px; }
+}
+@media print { .wa-float, .cart-fab, .cart-panel { display: none; } }
+
+/* --------------------------------------------------------------------------
+   Enquiry cart
+   -------------------------------------------------------------------------- */
+.cart-fab {
+  position: fixed;
+  right: 20px;
+  bottom: 84px;
+  z-index: 60;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: var(--navy-800);
+  color: var(--white);
+  display: none;
+  place-items: center;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.15s;
+}
+.cart-fab.show { display: grid; }
+.cart-fab:hover { transform: translateY(-2px); }
+.cart-fab svg { width: 22px; height: 22px; }
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--amber-500);
+  color: var(--white);
+  font-size: 0.72rem;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  padding: 0 5px;
+}
+.cart-panel {
+  position: fixed;
+  right: 20px;
+  bottom: 148px;
+  z-index: 60;
+  width: min(320px, calc(100vw - 40px));
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 18px;
+  display: none;
+}
+.cart-panel.open { display: block; }
+.cart-panel h4 { font-size: 1rem; margin-bottom: 10px; }
+.cart-panel ul { list-style: none; margin: 0 0 14px; padding: 0; max-height: 240px; overflow-y: auto; display: grid; gap: 6px; }
+.cart-panel li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  background: var(--steel-50);
+  border-radius: 8px;
+  padding: 7px 10px;
+}
+.cart-remove {
+  border: none;
+  background: none;
+  color: var(--ink-faint);
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 4px;
+}
+.cart-remove:hover { color: var(--amber-600); }
+.cart-actions { display: flex; gap: 8px; }
+.btn.btn-sm { padding: 9px 16px; font-size: 0.88rem; }
+.cart-clear { background: var(--steel-100); color: var(--navy-800); }
+.cart-clear:hover { background: var(--line); }
+
+/* Add-to-enquiry buttons on product tiles */
+.product-tile .tile-actions { padding: 0 14px 14px; background: var(--steel-50); }
+.product-tile .add-enquiry {
+  width: 100%;
+  border: 1.5px solid var(--navy-800);
+  background: var(--white);
+  color: var(--navy-800);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.product-tile .add-enquiry:hover:not(:disabled) { background: var(--navy-800); color: var(--white); }
+.product-tile .add-enquiry:disabled { border-color: #1da851; color: #128c42; background: #e7f7ee; }
+
+/* Brand pages */
+.brand-hero-logo {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 40px;
+  display: grid;
+  place-items: center;
+}
+.brand-hero-logo img { max-height: 180px; object-fit: contain; }
+
+/* --------------------------------------------------------------------------
    Reveal animation
    -------------------------------------------------------------------------- */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
