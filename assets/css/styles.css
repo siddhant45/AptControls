@@ -738,6 +738,31 @@ p { margin: 0 0 1em; }
 }
 
 /* --------------------------------------------------------------------------
+   Articles (Insights)
+   -------------------------------------------------------------------------- */
+.article { max-width: 800px; }
+.article h2 { font-size: 1.35rem; margin: 1.6em 0 0.5em; }
+.article h3 { font-size: 1.08rem; margin: 1.2em 0 0.4em; }
+.article p, .article li { color: var(--ink-soft); }
+.article .lead { font-size: 1.12rem; color: var(--ink); }
+.article ul { padding-left: 1.25em; margin: 0 0 1.2em; display: grid; gap: 8px; }
+.article strong { color: var(--navy-900); }
+.article a { font-weight: 600; }
+.article em { color: var(--navy-800); }
+.article-meta { color: #8fa6bb; font-size: 0.9rem; }
+.article-cta {
+  margin-top: 44px;
+  background: var(--steel-50);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--amber-500);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+}
+.article-cta p { margin: 0; }
+a.tag { transition: background 0.15s, color 0.15s; }
+a.tag:hover { background: var(--navy-800); color: var(--white); }
+
+/* --------------------------------------------------------------------------
    FAQ accordion
    -------------------------------------------------------------------------- */
 .faq { display: grid; gap: 12px; }

@@ -313,6 +313,323 @@ head = make_head(
 written.append("brands.html")
 print("wrote brands.html")
 
+# ---- product category landing pages ---------------------------------------
+# slug: (name, group, description, [applications], [brand slugs], [spec tags])
+CATS = {
+    "temperature-controllers": ("Temperature Controllers", "Temperature",
+        "PID and on-off temperature controllers regulate ovens, furnaces, extruders and process baths with precise setpoint control. We supply panel-mount controllers from compact 48x48 mm units to advanced profile controllers with communication options.",
+        ["Plastic processing and extrusion", "Furnaces and heat treatment", "Packaging machinery", "Food processing and ovens"],
+        ["omron", "autonics", "azbil"], ["PID / On-Off", "48x48 to 96x96 mm", "SSR & Relay Output", "RS-485 Modbus"]),
+    "temperature-transmitters": ("Temperature Transmitters", "Temperature",
+        "Head-mount and rail-mount temperature transmitters convert RTD and thermocouple signals to a stable 4-20 mA or digital output for reliable transmission to PLC and DCS systems.",
+        ["Process plants and reactors", "Remote tank farms", "HVAC and utilities", "OEM skids"],
+        ["wika", "azbil"], ["4-20 mA", "HART option", "Head / DIN-rail mount"]),
+    "rtd-pt100-sensors": ("RTD Pt100 Sensors", "Temperature",
+        "Resistance temperature detectors (RTD Pt100) offer accurate, stable temperature measurement for industrial processes. We supply element-only, head-type and cable-type assemblies with thermowells to suit your process connection.",
+        ["Pharma and food hygienic processes", "Motors and bearings monitoring", "Process pipelines", "Cold storage"],
+        ["wika"], ["Class A / B", "3-wire / 4-wire", "SS316 sheath", "Custom lengths"]),
+    "thermocouples": ("Thermocouples", "Temperature",
+        "Type K, J, T, R and S thermocouple assemblies for temperatures beyond RTD range — furnaces, kilns and molten processes. Supplied with compensating cables and ceramic or metal protection tubes.",
+        ["Furnaces and kilns", "Foundries and heat treatment", "Boilers", "Glass and ceramics"],
+        ["wika"], ["Type K / J / T / R / S", "Ceramic / SS sheath", "Compensating cable"]),
+    "thermowells": ("Thermowells", "Temperature",
+        "Machined barstock and fabricated thermowells protect temperature sensors from process pressure, flow and corrosion, allowing sensor replacement without shutting the line.",
+        ["Chemical and process piping", "High-pressure lines", "Hygienic processes"],
+        ["wika"], ["Threaded / Flanged / Weld-in", "SS316 / Exotic alloys"]),
+    "pressure-gauges": ("Pressure Gauges", "Pressure",
+        "Bourdon tube, diaphragm and capsule pressure gauges in industrial and process-grade builds — dry and glycerine-filled, from vacuum to high pressure ranges, with all standard process connections.",
+        ["Pneumatics and compressors", "Hydraulic power packs", "Boilers and utilities", "Process skids"],
+        ["wika"], ["40 to 250 mm dial", "Glycerine filled", "SS / Brass wetted parts", "Vacuum to 1000 bar"]),
+    "pressure-transmitters": ("Pressure Transmitters", "Pressure",
+        "Pressure transmitters convert process pressure to a 4-20 mA signal for control and monitoring. We supply gauge, absolute and differential pressure transmitters with a wide range of process connections and accuracies.",
+        ["Process control loops", "Water treatment and pumping", "OEM machinery", "Tank level by hydrostatic head"],
+        ["wika", "ifm"], ["4-20 mA / IO-Link", "0.5% to 0.075% accuracy", "Gauge / Absolute / DP"]),
+    "pressure-switches": ("Pressure Switches", "Pressure",
+        "Mechanical and electronic pressure switches provide reliable switching for pump control, alarms and machine protection, with adjustable setpoints and high switching accuracy.",
+        ["Pump on-off control", "Compressor protection", "Lubrication systems", "Fire-fighting lines"],
+        ["wika", "ifm", "telemecanique"], ["SPDT / DPDT", "Electronic with display", "IP65+"]),
+    "diaphragm-seals": ("Diaphragm Seals", "Pressure",
+        "Diaphragm seals isolate pressure instruments from corrosive, viscous or hygienic media, extending gauge and transmitter life while maintaining measurement accuracy.",
+        ["Chemical dosing", "Pharma / hygienic (tri-clamp)", "Slurry and viscous media"],
+        ["wika"], ["Threaded / Flanged / Tri-clamp", "SS316L, PTFE lining"]),
+    "flow-meters": ("Flow Meters", "Flow",
+        "Flow meters for liquids, gases and steam — electromagnetic, vortex, turbine and oval-gear technologies matched to your media, line size and accuracy requirement.",
+        ["Water and effluent measurement", "Chemical dosing", "Fuel and oil monitoring", "Steam and compressed air"],
+        ["ifm", "baumer"], ["Magnetic / Vortex / Turbine", "Digital display", "4-20 mA / Pulse"]),
+    "flow-switches": ("Flow Switches", "Flow",
+        "Flow switches protect pumps, motors and heat exchangers by detecting loss of flow — paddle, thermal-dispersion and calorimetric types for water, oil and air.",
+        ["Pump dry-run protection", "Cooling water circuits", "HVAC systems"],
+        ["ifm"], ["Paddle / Thermal", "Relay or PNP output", "Inline / Insertion"]),
+    "rotameters": ("Rotameters", "Flow",
+        "Variable-area flow meters (rotameters) give simple, reliable local flow indication for liquids and gases — glass tube and metal tube designs with optional alarms and transmitters.",
+        ["Purge and seal water lines", "Gas flow indication", "Dosing systems"],
+        ["wika"], ["Glass / Metal tube", "Alarm contacts", "Direct reading scales"]),
+    "level-transmitters": ("Level Transmitters", "Level",
+        "Continuous level measurement for tanks and silos using hydrostatic, ultrasonic, capacitive and radar technologies — with 4-20 mA and IO-Link outputs for PLC integration.",
+        ["Storage tanks and silos", "Water and effluent treatment", "Chemical storage", "Food-grade vessels"],
+        ["ifm", "pepperl-fuchs"], ["Hydrostatic / Ultrasonic / Radar", "4-20 mA / IO-Link"]),
+    "level-switches": ("Level Switches", "Level",
+        "Point level switches — float, vibrating fork, conductive and capacitive — for reliable high/low alarms and pump control in liquids and solids.",
+        ["Overfill protection", "Pump control", "Dry-run protection", "Hopper level"],
+        ["ifm", "pepperl-fuchs"], ["Float / Fork / Capacitive", "Side / Top mounting"]),
+    "inductive-proximity-sensors": ("Inductive Proximity Sensors", "Sensors",
+        "Inductive proximity sensors detect metal targets without contact — the workhorse of machine automation. We stock M8 to M30 barrels, flush and non-flush, standard and extended sensing ranges from world-leading makes.",
+        ["Position sensing on machines", "Conveyor and material handling", "Automotive fixtures", "Packaging lines"],
+        ["pepperl-fuchs", "autonics", "ifm", "omron", "balluff", "contrinex", "turck"], ["M8-M30 barrel", "PNP / NPN, NO / NC", "2-wire / 3-wire", "IP67+"]),
+    "capacitive-sensors": ("Capacitive Sensors", "Sensors",
+        "Capacitive proximity sensors detect non-metallic materials — plastics, liquids, powders and granules — through container walls, ideal for level detection and presence sensing.",
+        ["Level detection through tank walls", "Plastics and wood detection", "Granule and powder hoppers"],
+        ["pepperl-fuchs", "autonics", "ifm"], ["M12-M30", "Adjustable sensitivity", "PNP / NPN"]),
+    "photoelectric-sensors": ("Photoelectric Sensors", "Sensors",
+        "Through-beam, retro-reflective and diffuse photoelectric sensors for object detection at range — with laser, background-suppression and clear-object variants for demanding applications.",
+        ["Packaging and bottling lines", "Object counting", "Web and sheet detection", "Palletizing"],
+        ["autonics", "sick", "banner", "omron", "pepperl-fuchs", "leuze", "datalogic", "panasonic"], ["Through-beam / Diffuse", "Laser variants", "Background suppression"]),
+    "ultrasonic-sensors": ("Ultrasonic Sensors", "Sensors",
+        "Ultrasonic sensors detect objects and measure distance regardless of colour, transparency or surface — reliable in dusty and wet environments where optical sensors struggle.",
+        ["Level in tanks and silos", "Transparent object detection", "Distance measurement", "Loop control"],
+        ["banner", "pepperl-fuchs", "sick"], ["Analog + switching output", "30 mm to 8 m range"]),
+    "fiber-optic-sensors": ("Fiber Optic Sensors", "Sensors",
+        "Fiber optic sensors put a tiny sensing head where space is tight and the amplifier where you can reach it — precise small-part detection on fast machines.",
+        ["Small parts on feeders", "Electronics assembly", "Tight machine spaces"],
+        ["autonics", "sick", "panasonic", "banner"], ["Through-beam / Diffuse fibers", "Digital amplifiers"]),
+    "rotary-encoders": ("Rotary Encoders", "Sensors",
+        "Incremental and absolute rotary encoders provide speed and position feedback for motors, conveyors and positioning axes, in shaft and hollow-shaft designs.",
+        ["Motor speed feedback", "Length measurement", "Positioning axes", "Elevators and cranes"],
+        ["baumer", "autonics", "pepperl-fuchs"], ["Incremental / Absolute", "Shaft / Hollow shaft", "HTL / TTL / SSI"]),
+    "safety-light-curtains": ("Safety Light Curtains", "Safety",
+        "Type 2 and Type 4 safety light curtains guard operator access points on presses, robots and automated machinery — finger, hand and body resolution with muting and blanking options.",
+        ["Power press guarding", "Robot cell access", "Packaging machinery", "Assembly stations"],
+        ["sick", "banner", "leuze", "datalogic", "schmersal"], ["Type 2 / Type 4", "14-90 mm resolution", "Muting / Blanking"]),
+    "safety-relays": ("Safety Relays", "Safety",
+        "Safety relays monitor e-stops, gates and light curtains and switch machine power safely — the certified core of every machine safety circuit.",
+        ["E-stop monitoring", "Gate/guard monitoring", "Two-hand control", "Light curtain interface"],
+        ["pilz", "schmersal", "omron", "banner"], ["Cat. 3 / Cat. 4, PLe", "Force-guided contacts"]),
+    "safety-interlock-switches": ("Safety Interlock Switches", "Safety",
+        "Guard interlock and solenoid-locking switches keep hazardous machinery stopped until guards are closed — mechanical, coded-magnet and RFID-coded types with high manipulation resistance.",
+        ["Guard doors and hatches", "Fenced robot cells", "Access covers"],
+        ["schmersal", "euchner", "pilz"], ["Solenoid locking", "RFID coded", "Tongue / Hinge types"]),
+    "limit-switches": ("Limit Switches", "Switchgear & Control",
+        "Heavy-duty position and limit switches for machine end-of-travel detection — lever, roller, plunger and rod actuators in metal and thermoplastic bodies.",
+        ["Cranes and hoists", "Machine end-of-travel", "Conveyors", "Valve position"],
+        ["telemecanique", "omron", "schmersal"], ["Roller / Lever / Plunger", "Snap action", "IP66/67"]),
+    "digital-panel-meters": ("Digital Panel Meters", "Panel Instruments",
+        "Digital panel meters display process values, voltage, current, frequency and energy on the panel front — with alarms, retransmission and communication options.",
+        ["Control panel metering", "Generator and energy panels", "Process displays"],
+        ["autonics", "omron"], ["48x24 to 96x96 mm", "Alarm relays", "RS-485"]),
+    "process-indicators": ("Process Indicators", "Panel Instruments",
+        "Universal-input process indicators accept RTD, thermocouple and 4-20 mA signals and show the value clearly, with alarm setpoints and optional retransmission to SCADA.",
+        ["Tank farm displays", "Furnace monitoring", "Weighbridge and batching"],
+        ["autonics", "omron"], ["Universal input", "Alarm outputs", "Retransmission"]),
+    "counters-timers": ("Counters & Timers", "Panel Instruments",
+        "Preset counters, totalizers and multi-function timers for machine sequencing, batch counting and production totals — panel-mount and DIN-rail formats.",
+        ["Batch counting", "Production totalizing", "Machine sequencing", "Star-delta timing"],
+        ["autonics", "omron"], ["LCD / LED", "Preset outputs", "Multi-function"]),
+    "smps-power-supplies": ("SMPS Power Supplies", "Power",
+        "Switch-mode power supplies deliver clean 24 V DC for sensors, PLCs and panel electronics — DIN-rail and panel-mount units from 15 W to 960 W with protection built in.",
+        ["Control panel 24 V DC", "Sensor and PLC supply", "LED and instrumentation power"],
+        ["delta", "omron", "autonics"], ["24 V DC, 1-40 A", "DIN-rail mount", "Overload protection"]),
+    "vfd-drives": ("VFD / AC Drives", "Power",
+        "Variable frequency drives control motor speed to save energy and improve process control — from compact micro drives to fan/pump and heavy-duty vector drives.",
+        ["Pumps and fans", "Conveyors", "Machine spindles", "HVAC"],
+        ["delta"], ["0.4 to 355 kW", "V/f and vector control", "Built-in braking"]),
+    "enclosure-heaters": ("Enclosure & Panel Heaters", "Heating & Cooling",
+        "Anti-condensation heaters keep control panels and outdoor enclosures dry, protecting electronics from moisture and corrosion — with thermostats and hygrostats for automatic control.",
+        ["Outdoor panels and kiosks", "Coastal and humid sites", "Switchgear rooms"],
+        ["itec"], ["10-400 W", "Thermostat control", "DIN-rail mount"]),
+    "relays-contactors": ("Relays & Contactors", "Switchgear & Control",
+        "Plug-in relays, contactor relays and power contactors for switching control circuits and motor loads — with sockets, accessories and timer variants.",
+        ["Motor switching", "Control logic", "Heating loads", "Interposing duty"],
+        ["omron", "telemecanique"], ["5 A to 800 A", "AC / DC coils", "1-4 pole"]),
+    "push-buttons-pilot-devices": ("Push Buttons & Pilot Devices", "Switchgear & Control",
+        "Push buttons, selector switches, emergency-stop devices and pilot lights in 22 mm standard — the operator interface of every control panel, in metal and plastic ranges.",
+        ["Machine control stations", "Control desks", "E-stop stations"],
+        ["telemecanique", "omron", "autonics"], ["22 mm standard", "Illuminated options", "E-stop mushroom"]),
+    "cooling-fans": ("Panel Cooling Fans", "Heating & Cooling",
+        "Axial fans and filter-fan units remove heat from control panels, extending the life of drives and power supplies — with matching exhaust filters and accessories.",
+        ["VFD and PLC panels", "Server and telecom cabinets", "Power electronics"],
+        ["ebm-papst"], ["Axial / Centrifugal", "230 V AC / 24 V DC", "Filter fan units"]),
+    "ph-conductivity-analyzers": ("pH & Conductivity Analyzers", "Analytical",
+        "Online pH, ORP and conductivity measurement for water treatment and process quality — electrodes, transmitters and complete analyzer loops.",
+        ["Water and effluent treatment", "Boiler water quality", "CIP monitoring", "Chemical processes"],
+        ["azbil"], ["pH / ORP / EC", "4-20 mA output", "Panel or field mount"]),
+}
+
+CAT_BODY = """  <!-- Page hero -->
+  <section class="page-hero">
+    <div class="wrap">
+      <div class="crumbs"><a href="index.html">Home</a> / <a href="products.html">Products</a> / {name}</div>
+      <h1>{name} — Supplier in Indore–Dewas</h1>
+      <p>{name} from world-leading brands, supplied with correct model selection, genuine-product assurance and support since 1993.</p>
+    </div>
+  </section>
+
+  <section class="section tint">
+    <div class="wrap split">
+      <div class="reveal">
+        <span class="kicker">{group}</span>
+        <h2>{name}, Selected Right for Your Application</h2>
+        <p class="lead">{desc}</p>
+        <ul class="checklist">
+{apps}
+        </ul>
+        <div class="tags" style="margin-bottom: 26px;">
+{tags}
+        </div>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="contact.html">
+            Get a Quote
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </a>
+          <button type="button" class="btn btn-navy" data-enquiry="{name}">Add to Enquiry List</button>
+        </div>
+      </div>
+      <div class="reveal">
+        <h3 style="font-size:1.05rem; margin-bottom:16px;">Available Makes</h3>
+        <div class="logo-grid" style="grid-template-columns: repeat(2, 1fr);">
+{brandcells}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Related Products</span>
+        <h2>More in {group}</h2>
+      </div>
+      <div class="tags reveal">
+{related}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="wrap">
+      <div class="cta-band reveal">
+        <div>
+          <h2>Need {lname} for your plant?</h2>
+          <p>Share your application or a model number — we'll recommend the right make and quote quickly.</p>
+        </div>
+        <a class="btn btn-primary" href="contact.html">
+          Send an Enquiry
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+"""
+
+CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>'
+
+for slug, (name, group, desc, apps, cat_brands, tags) in CATS.items():
+    fname = f"{slug}.html"
+    canonical = f"{BASE}/{fname}"
+    apps_html = "\n".join(f"          <li>{CHECK_SVG}{a}</li>" for a in apps)
+    tags_html = "\n".join(f'          <span class="tag">{t}</span>' for t in tags)
+    cells = "\n".join(
+        f'          <a class="logo-cell" href="brand-{b}.html"><img src="assets/img/brands/{b}.png" alt="{BRANDS[b][0]}" loading="lazy"></a>'
+        for b in cat_brands)
+    related = "\n".join(
+        f'        <a class="tag" href="{s}.html">{CATS[s][0]}</a>'
+        for s in CATS if s != slug and CATS[s][1] == group) or '        <a class="tag" href="products.html">All Products</a>'
+    title = f"{name} Supplier &amp; Dealer in Indore–Dewas (M.P.) | Apt Controls"
+    page_desc = f"Buy {name.lower()} in Indore–Dewas, Madhya Pradesh from Apt Controls — {desc[:120].rstrip('.')}. Genuine products, quotations &amp; support since 1993."
+    keywords = f"{name.lower()} supplier Indore, {name.lower()} dealer Madhya Pradesh, {name.lower()} distributor India, buy {name.lower()}, {name.lower()} price Indore"
+    head = make_head(title, page_desc, keywords, canonical,
+                     crumb(("Home", BASE + "/"), ("Products", BASE + "/products.html"), (name, canonical)))
+    body = CAT_BODY.format(name=name, lname=name.lower(), group=group, desc=desc,
+                           apps=apps_html, tags=tags_html, brandcells=cells, related=related)
+    (root / fname).write_text(head + header + body + "\n" + footer)
+    written.append(fname)
+print(f"wrote {len(CATS)} category pages")
+
+# inject category links into the products page placeholder
+cat_links = "\n".join(f'        <a class="tag" href="{s}.html">{CATS[s][0]}</a>' for s in CATS)
+prod_page = root / "products.html"
+prod_page.write_text(prod_page.read_text().replace("<!--CATEGORY_LINKS-->", cat_links))
+
+# ---- blog / insights -------------------------------------------------------
+art_dir = frag_dir.parent / "articles"
+articles = []
+if art_dir.is_dir():
+    for art in sorted(art_dir.glob("*.html")):
+        text = art.read_text()
+        m = re.match(r"<!--TITLE:(.*?)-->\n<!--DESC:(.*?)-->\n<!--KEYWORDS:(.*?)-->\n<!--DATE:(.*?)-->\n<!--LABEL:(.*?)-->\n", text, re.S)
+        title, desc, keywords, date, label = (m.group(i).strip() for i in range(1, 6))
+        body_html = text[m.end():]
+        fname = f"blog-{art.stem}.html"
+        canonical = f"{BASE}/{fname}"
+        short = title.split("|")[0].split("—")[0].strip()
+        article_ld = {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": short,
+            "description": re.sub(r"&amp;", "&", desc),
+            "datePublished": date,
+            "dateModified": date,
+            "author": {"@type": "Organization", "name": "Apt Controls", "url": BASE + "/"},
+            "publisher": {"@type": "Organization", "name": "Apt Controls", "logo": {"@type": "ImageObject", "url": BASE + "/assets/img/logo.png"}},
+            "mainEntityOfPage": canonical,
+        }
+        page_body = f"""  <!-- Page hero -->
+  <section class="page-hero">
+    <div class="wrap">
+      <div class="crumbs"><a href="index.html">Home</a> / <a href="blog.html">Insights</a> / {label}</div>
+      <h1>{short}</h1>
+      <p class="article-meta">{label} · Published {date} · Apt Controls Team</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap article">
+{body_html}
+      <div class="article-cta">
+        <p><strong>Need help selecting?</strong> Our team has matched instruments to applications since 1993 — <a href="contact.html">send us your requirement</a> or call <a href="tel:+918878114492">+91 88781 14492</a>.</p>
+      </div>
+    </div>
+  </section>
+"""
+        head = make_head(title, desc, keywords, canonical,
+                         crumb(("Home", BASE + "/"), ("Insights", BASE + "/blog.html"), (short, canonical)))
+        head = head.replace("</head>", f'  <script type="application/ld+json">\n{json.dumps(article_ld, indent=2)}\n  </script>\n</head>')
+        (root / fname).write_text(head + header + page_body + "\n" + footer)
+        written.append(fname)
+        articles.append((fname, short, desc, date, label))
+    # blog index
+    cards = "\n".join(f"""        <a class="card reveal" href="{f}" style="display:block;">
+          <span class="kicker">{label}</span>
+          <h3>{short}</h3>
+          <p>{desc}</p>
+          <p style="margin-top:12px; font-size:0.82rem; color:var(--ink-faint);">{date} · Apt Controls Team</p>
+        </a>""" for f, short, desc, date, label in sorted(articles, key=lambda a: a[3], reverse=True))
+    blog_body = f"""  <!-- Page hero -->
+  <section class="page-hero">
+    <div class="wrap">
+      <div class="crumbs"><a href="index.html">Home</a> / Insights</div>
+      <h1>Insights &amp; Selection Guides</h1>
+      <p>Practical guides from three decades of matching instruments to applications — written for the engineers who keep plants running.</p>
+    </div>
+  </section>
+
+  <section class="section tint">
+    <div class="wrap">
+      <div class="grid cols-2">
+{cards}
+      </div>
+    </div>
+  </section>
+"""
+    canonical = f"{BASE}/blog.html"
+    head = make_head(
+        "Insights — Instrumentation Selection Guides &amp; Technical Articles | Apt Controls",
+        "Practical selection guides for pressure transmitters, temperature sensors, proximity sensors, safety light curtains, calibration and more — from Apt Controls, industrial instrumentation distributor since 1993.",
+        "instrument selection guide, pressure transmitter selection, RTD vs thermocouple, proximity sensor types, safety light curtain guide, instrument calibration importance",
+        canonical, crumb(("Home", BASE + "/"), ("Insights", canonical)))
+    (root / "blog.html").write_text(head + header + blog_body + "\n" + footer)
+    written.append("blog.html")
+    print(f"wrote blog.html + {len(articles)} articles")
+
 # ---- sitemap.xml ----------------------------------------------------------
 today = datetime.date.today().isoformat()
 prio = {"products.html": "0.9", "brands.html": "0.9", "services.html": "0.8", "contact.html": "0.8", "about.html": "0.7"}
