@@ -738,6 +738,43 @@ p { margin: 0 0 1em; }
 }
 
 /* --------------------------------------------------------------------------
+   FAQ accordion
+   -------------------------------------------------------------------------- */
+.faq { display: grid; gap: 12px; }
+.faq details {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0 20px;
+  transition: border-color 0.15s;
+}
+.faq details[open] { border-color: var(--steel-500); }
+.faq summary {
+  cursor: pointer;
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 1.02rem;
+  color: var(--navy-900);
+  padding: 16px 0;
+  list-style: none;
+  position: relative;
+  padding-right: 30px;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: "+";
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.3rem;
+  color: var(--amber-500);
+  transition: transform 0.2s;
+}
+.faq details[open] summary::after { content: "–"; }
+.faq details p { color: var(--ink-soft); font-size: 0.97rem; margin: 0 0 16px; }
+
+/* --------------------------------------------------------------------------
    Floating WhatsApp button
    -------------------------------------------------------------------------- */
 .wa-float {
