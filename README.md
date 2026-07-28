@@ -14,7 +14,23 @@ Rebuilt as a modern replacement for the previous site at [aptcontrols.net](https
 | `about.html` | Company story, values, what we do |
 | `products.html` | Full product range (12+ categories) and brands represented |
 | `services.html` | Supply & distribution, calibration, maintenance, selection guidance |
-| `contact.html` | Contact details, enquiry form, location map |
+| `contact.html` | Contact details, enquiry form (email + WhatsApp), location map |
+| `brands.html` + `brand-*.html` | Brands index + 24 SEO landing pages, one per brand |
+| `thank-you.html` | Post-enquiry confirmation (noindex) |
+
+## Configuration
+
+Feature flags and the WhatsApp number live in `assets/js/config.js`
+(floating WhatsApp button, enquiry basket, Google Analytics ID).
+See `REVERT.md` for how to disable features or roll back entirely.
+
+## Regenerating pages
+
+Inner pages, brand pages and `sitemap.xml` are generated:
+
+```bash
+python3 tools/build_pages.py
+```
 
 ## Tech
 

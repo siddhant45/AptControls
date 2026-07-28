@@ -1,0 +1,35 @@
+# Apt Controls
+
+> Apt Controls is an independent, family-owned distributor of industrial
+> process control instruments, electrical, electronics and automation
+> products, established in 1993 in Dewas (near Indore), Madhya Pradesh,
+> India. It supplies genuine products from 24+ world-leading brands and
+> provides calibration and maintenance services.
+
+Key facts:
+- Established: 1993 (partnership firm)
+- Address: 113, Ram Nagar Extension, A.B. Road, Dewas — 455001 (M.P.), India
+- Phone: +91 88781 14492, +91 89894 78358, 07272-253198
+- Email: enquiry@aptcontrols.net
+- Service area: Dewas–Indore industrial belt, Madhya Pradesh and all India
+- Product categories (12+): temperature, pressure, flow, level, analytical
+  instruments, indicators & meters, primary sensors, RTD & thermocouple,
+  safety instruments, industrial heaters, power solutions, automation & control
+- Brands dealt in: WIKA, Autonics, Pepperl+Fuchs, SICK, Telemecanique,
+  Omron, ifm electronic, Banner Engineering, Balluff, Baumer, Turck, Pilz,
+  Panasonic Industry, Leuze, Schmersal, Euchner, Delta, ebm-papst, Azbil,
+  Datalogic, Contrinex, Module, Osna, iTEC
+- Services: supply & distribution, instrument calibration, maintenance &
+  breakdown support, application guidance and model selection
+- Clients include: Cipla, Lupin, Sun Pharma, Mankind Pharma, Glenmark, IPCA,
+  Macleods, Piramal, Dabur, Patanjali, Adani, Aditya Birla Group, JSW,
+  John Deere, Force Motors, MAHLE, Motherson Sumi, Kirloskar, SRF
+
+## Pages
+
+- [Home](https://aptcontrols.net/): company overview, product highlights, brands and clients
+- [About Us](https://aptcontrols.net/about.html): history since 1993, values, what we do
+- [Products](https://aptcontrols.net/products.html): all 12+ product categories with popular instruments
+- [Brands](https://aptcontrols.net/brands.html): index of all 24 brands, each with a dedicated page (e.g. https://aptcontrols.net/brand-wika.html)
+- [Services](https://aptcontrols.net/services.html): calibration, maintenance and supply process
+- [Contact](https://aptcontrols.net/contact.html): enquiry form (email/WhatsApp), phone numbers, map
